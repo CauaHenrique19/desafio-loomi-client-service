@@ -5,6 +5,7 @@ import { userProvider } from '@client-service/infra/orm/providers';
 import {
   createUserFactory,
   findUsersFactory,
+  updateUserFactory,
 } from '@client-service/main/factories/usecases';
 import { KafkaMessageBrokerAdapter } from '@client-service/infra/kafka/adapter';
 
@@ -21,7 +22,8 @@ import { KafkaMessageBrokerAdapter } from '@client-service/infra/kafka/adapter';
     //usecases
     createUserFactory,
     findUsersFactory,
+    updateUserFactory,
   ],
-  exports: [createUserFactory, findUsersFactory],
+  exports: [createUserFactory, findUsersFactory, updateUserFactory],
 })
 export class FactoryModule {}

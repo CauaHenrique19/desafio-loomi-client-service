@@ -5,13 +5,18 @@ import {
   CreateUserRepository,
   FindUserRepository,
   FindUsersRepository,
+  UpdateUserRepository,
 } from '@client-service/data/protocols/db';
 import { User } from '@client-service/infra/orm/entities';
 import { USER_REPOSITORY } from '@client-service/infra/orm/typeorm/typeorm.repositories';
 import { AppDataSource } from '@client-service/infra/orm/typeorm/data-source';
 
 export class UserRepository
-  implements CreateUserRepository, FindUsersRepository, FindUserRepository
+  implements
+    CreateUserRepository,
+    FindUsersRepository,
+    FindUserRepository,
+    UpdateUserRepository
 {
   private readonly userRepository: Repository<User>;
 
@@ -58,5 +63,11 @@ export class UserRepository
 
     await this.userRepository.save(user);
     return user;
+  }
+
+  async update(
+    parameters: UpdateUserRepository.Parameters,
+  ): Promise<UpdateUserRepository.Result> {
+    return this.userRepository.save(parameters);
   }
 }
