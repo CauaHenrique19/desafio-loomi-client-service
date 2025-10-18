@@ -3,6 +3,7 @@ import { EntityTarget, FindOptionsWhere, Repository } from 'typeorm';
 
 import {
   CreateUserRepository,
+  DeleteUserRepository,
   FindUserRepository,
   FindUsersRepository,
   UpdateUserRepository,
@@ -10,13 +11,15 @@ import {
 import { User } from '@client-service/infra/orm/entities';
 import { USER_REPOSITORY } from '@client-service/infra/orm/typeorm/typeorm.repositories';
 import { AppDataSource } from '@client-service/infra/orm/typeorm/data-source';
+import { StatusEnum } from '@client-service/domain/enums';
 
 export class UserRepository
   implements
     CreateUserRepository,
     FindUsersRepository,
     FindUserRepository,
-    UpdateUserRepository
+    UpdateUserRepository,
+    DeleteUserRepository
 {
   private readonly userRepository: Repository<User>;
 
@@ -69,5 +72,18 @@ export class UserRepository
     parameters: UpdateUserRepository.Parameters,
   ): Promise<UpdateUserRepository.Result> {
     return this.userRepository.save(parameters);
+  }
+
+  async delete(
+    parameters: DeleteUserRepository.Parameters,
+  ): Promise<DeleteUserRepository.Result> {
+    await this.userRepository.update(
+      {
+        id: parameters.id,
+      },
+      {
+        status: StatusEnum.INACTIVE,
+      },
+    );
   }
 }

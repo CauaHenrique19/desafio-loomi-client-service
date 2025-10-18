@@ -31,7 +31,4 @@ export class User implements UserModel {
 
   @Column({ name: 'created_at' })
   createdAt: Date;
-
-  @Column({ name: 'deleted_at', nullable: true })
-  deletedAt?: Date;
 }
