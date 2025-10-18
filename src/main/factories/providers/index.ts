@@ -1,0 +1,3 @@
+//user
+export const CREATE_USER_FACTORY = 'CREATE_USER_FACTORY';
+export const FIND_USERS_FACTORY = 'FIND_USERS_FACTORY';
