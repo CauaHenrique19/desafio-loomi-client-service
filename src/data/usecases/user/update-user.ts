@@ -20,7 +20,7 @@ export class UpdateUser implements UpdateUserUseCase {
       id: parameters.id,
     });
 
-    if (!user) {
+    if (!user.length) {
       throw new UserNotFoundError();
     }
 

@@ -3,17 +3,15 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
   Res,
-  UploadedFile,
-  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 import { controllerAdapter } from '@client-service/main/adapters/controller.adpter';
 import {
@@ -31,10 +29,19 @@ import {
 @Controller('users')
 export class UserController {
   constructor(
+    @Inject(BuildFindUsersController.name)
     private readonly buildFindUsersController: BuildFindUsersController,
+
+    @Inject(BuildCreateUserController.name)
     private readonly buildCreateUserController: BuildCreateUserController,
+
+    @Inject(BuildUpdateUserController.name)
     private readonly buildUpdateUserController: BuildUpdateUserController,
+
+    @Inject(BuildDeleteUserController.name)
     private readonly buildDeleteUserController: BuildDeleteUserController,
+
+    @Inject(BuildUpdateUserPictureController.name)
     private readonly buildUpdateUserPictureController: BuildUpdateUserPictureController,
   ) {}
 
@@ -87,20 +94,6 @@ export class UserController {
     const result = await controllerAdapter(
       this.buildDeleteUserController.build(),
       { id },
-    );
-    response.status(result.statusCode).json(result);
-  }
-
-  @Patch(':id/profile-picture')
-  @UseInterceptors(FileInterceptor('picture'))
-  async updateProfilePicture(
-    @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-    @Res() response: Response,
-  ): Promise<void> {
-    const result = await controllerAdapter(
-      this.buildUpdateUserPictureController.build(),
-      { id, picture: { mimeType: file.mimetype, value: file.buffer } },
     );
     response.status(result.statusCode).json(result);
   }
