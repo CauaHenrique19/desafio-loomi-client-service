@@ -7,6 +7,8 @@ export interface UserModel {
   address: string;
   bankAccount: string;
   digit: string;
+  pictureUrl: string;
+  pictureKey: string;
   status: StatusEnum;
   createdAt: Date;
   deletedAt?: Date;

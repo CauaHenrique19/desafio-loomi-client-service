@@ -23,6 +23,12 @@ export class User implements UserModel {
   @Column()
   digit: string;
 
+  @Column({ name: 'picture_url', nullable: true })
+  pictureUrl: string;
+
+  @Column({ name: 'picture_key', nullable: true })
+  pictureKey: string;
+
   @Column({
     type: 'enum',
     enum: StatusEnum,
