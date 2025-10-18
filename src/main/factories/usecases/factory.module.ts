@@ -4,6 +4,7 @@ import { UserRepository } from '@client-service/infra/orm/repositories';
 import { userProvider } from '@client-service/infra/orm/providers';
 import {
   createUserFactory,
+  deleteUserFactory,
   findUsersFactory,
   updateUserFactory,
 } from '@client-service/main/factories/usecases';
@@ -23,7 +24,13 @@ import { KafkaMessageBrokerAdapter } from '@client-service/infra/kafka/adapter';
     createUserFactory,
     findUsersFactory,
     updateUserFactory,
+    deleteUserFactory,
   ],
-  exports: [createUserFactory, findUsersFactory, updateUserFactory],
+  exports: [
+    createUserFactory,
+    findUsersFactory,
+    updateUserFactory,
+    deleteUserFactory,
+  ],
 })
 export class FactoryModule {}

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -14,6 +15,7 @@ import { Response } from 'express';
 import { controllerAdapter } from '@client-service/main/adapters/controller.adpter';
 import {
   BuildCreateUserController,
+  BuildDeleteUserController,
   BuildFindUsersController,
   BuildUpdateUserController,
 } from '@client-service/main/factories/controllers';
@@ -28,6 +30,7 @@ export class UserController {
     private readonly buildFindUsersController: BuildFindUsersController,
     private readonly buildCreateUserController: BuildCreateUserController,
     private readonly buildUpdateUserController: BuildUpdateUserController,
+    private readonly buildDeleteUserController: BuildDeleteUserController,
   ) {}
 
   @Get('/:id')
@@ -66,6 +69,19 @@ export class UserController {
     const result = await controllerAdapter(
       this.buildUpdateUserController.build(),
       { id, ...body },
+    );
+    response.status(result.statusCode).json(result);
+  }
+
+  @Delete(':id')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async delete(
+    @Param('id') id: string,
+    @Res() response: Response,
+  ): Promise<void> {
+    const result = await controllerAdapter(
+      this.buildDeleteUserController.build(),
+      { id },
     );
     response.status(result.statusCode).json(result);
   }
