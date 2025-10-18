@@ -1,2 +1,2 @@
-export * from './create-category.controller';
-export * from './find-categories.controller';
+export * from './create-users.controller';
+export * from './find-users.controller';
