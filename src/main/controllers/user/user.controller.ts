@@ -7,10 +7,13 @@ import {
   Patch,
   Post,
   Res,
+  UploadedFile,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { controllerAdapter } from '@client-service/main/adapters/controller.adpter';
 import {
@@ -18,6 +21,7 @@ import {
   BuildDeleteUserController,
   BuildFindUsersController,
   BuildUpdateUserController,
+  BuildUpdateUserPictureController,
 } from '@client-service/main/factories/controllers';
 import {
   CreateUserDTO,
@@ -31,6 +35,7 @@ export class UserController {
     private readonly buildCreateUserController: BuildCreateUserController,
     private readonly buildUpdateUserController: BuildUpdateUserController,
     private readonly buildDeleteUserController: BuildDeleteUserController,
+    private readonly buildUpdateUserPictureController: BuildUpdateUserPictureController,
   ) {}
 
   @Get('/:id')
@@ -82,6 +87,20 @@ export class UserController {
     const result = await controllerAdapter(
       this.buildDeleteUserController.build(),
       { id },
+    );
+    response.status(result.statusCode).json(result);
+  }
+
+  @Patch(':id/profile-picture')
+  @UseInterceptors(FileInterceptor('picture'))
+  async updateProfilePicture(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Res() response: Response,
+  ): Promise<void> {
+    const result = await controllerAdapter(
+      this.buildUpdateUserPictureController.build(),
+      { id, picture: { mimeType: file.mimetype, value: file.buffer } },
     );
     response.status(result.statusCode).json(result);
   }
