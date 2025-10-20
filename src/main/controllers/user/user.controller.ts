@@ -8,6 +8,8 @@ import {
   Patch,
   Post,
   Res,
+  UploadedFile,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -25,6 +27,7 @@ import {
   CreateUserDTO,
   UpdateUserDTO,
 } from '@client-service/main/controllers/user/dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -94,6 +97,20 @@ export class UserController {
     const result = await controllerAdapter(
       this.buildDeleteUserController.build(),
       { id },
+    );
+    response.status(result.statusCode).json(result);
+  }
+
+  @Patch(':id/profile-picture')
+  @UseInterceptors(FileInterceptor('picture'))
+  async updateProfilePicture(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Res() response: Response,
+  ): Promise<void> {
+    const result = await controllerAdapter(
+      this.buildUpdateUserPictureController.build(),
+      { id, picture: { mimeType: file.mimetype, value: file.buffer } },
     );
     response.status(result.statusCode).json(result);
   }
