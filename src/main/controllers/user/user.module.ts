@@ -13,11 +13,26 @@ import { UserController } from './user.controller';
   imports: [FactoryModule],
   controllers: [UserController],
   providers: [
-    BuildCreateUserController,
-    BuildFindUsersController,
-    BuildUpdateUserController,
-    BuildDeleteUserController,
-    BuildUpdateUserPictureController,
+    {
+      provide: BuildCreateUserController.name,
+      useClass: BuildCreateUserController,
+    },
+    {
+      provide: BuildFindUsersController.name,
+      useClass: BuildFindUsersController,
+    },
+    {
+      provide: BuildUpdateUserController.name,
+      useClass: BuildUpdateUserController,
+    },
+    {
+      provide: BuildDeleteUserController.name,
+      useClass: BuildDeleteUserController,
+    },
+    {
+      provide: BuildUpdateUserPictureController.name,
+      useClass: BuildUpdateUserPictureController,
+    },
   ],
 })
 export class UserModule {}

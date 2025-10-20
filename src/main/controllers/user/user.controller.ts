@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
@@ -13,7 +14,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 import { controllerAdapter } from '@client-service/main/adapters/controller.adpter';
 import {
@@ -27,14 +27,24 @@ import {
   CreateUserDTO,
   UpdateUserDTO,
 } from '@client-service/main/controllers/user/dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
   constructor(
+    @Inject(BuildFindUsersController.name)
     private readonly buildFindUsersController: BuildFindUsersController,
+
+    @Inject(BuildCreateUserController.name)
     private readonly buildCreateUserController: BuildCreateUserController,
+
+    @Inject(BuildUpdateUserController.name)
     private readonly buildUpdateUserController: BuildUpdateUserController,
+
+    @Inject(BuildDeleteUserController.name)
     private readonly buildDeleteUserController: BuildDeleteUserController,
+
+    @Inject(BuildUpdateUserPictureController.name)
     private readonly buildUpdateUserPictureController: BuildUpdateUserPictureController,
   ) {}
 

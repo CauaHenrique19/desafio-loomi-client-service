@@ -44,5 +44,5 @@ export const partialSuccess = (body: any): HttpResponse => ({
 
 export const notFound = (error?: Error): HttpResponse => ({
   statusCode: 404,
-  body: error?.message || 'Recurso não encontrado.',
+  body: error?.message,
 });

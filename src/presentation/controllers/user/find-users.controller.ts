@@ -1,5 +1,7 @@
+import { UserNotFoundError } from '@client-service/domain/errors';
 import { FindUsersUseCase } from '@client-service/domain/usecases';
 import {
+  notFound,
   ok,
   serverError,
 } from '@client-service/presentation/helpers/http-helper';
@@ -16,6 +18,10 @@ export class FindUsersController implements Controller {
       const users = await this.findUsers.find(request);
       return ok(users);
     } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        return notFound(error);
+      }
+
       return serverError(error);
     }
   }
