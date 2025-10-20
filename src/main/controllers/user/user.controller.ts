@@ -14,6 +14,17 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { controllerAdapter } from '@client-service/main/adapters/controller.adpter';
 import {
@@ -29,6 +40,7 @@ import {
 } from '@client-service/main/controllers/user/dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(
@@ -48,6 +60,34 @@ export class UserController {
     private readonly buildUpdateUserPictureController: BuildUpdateUserPictureController,
   ) {}
 
+  @ApiInternalServerErrorResponse({
+    description: 'Erro inesperado na execução',
+  })
+  @ApiNotFoundResponse({
+    description: 'Nenhum usuário encontrado',
+  })
+  @ApiOkResponse({
+    description: 'Usuário encontrado com id',
+    isArray: true,
+    example: {
+      statusCode: 200,
+      body: [
+        {
+          id: 'string',
+          name: 'string',
+          email: 'string',
+          address: 'string',
+          bankAccount: 'string',
+          digit: 'string',
+          pictureUrl: 'string',
+          pictureKey: 'string',
+          status: 'ACTIVE',
+          createdAt: 'Date',
+          deletedAt: 'Date',
+        },
+      ],
+    },
+  })
   @Get('/:id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async find(
@@ -61,6 +101,42 @@ export class UserController {
     response.status(result.statusCode).json(result);
   }
 
+  @ApiBody({
+    schema: {
+      example: {
+        name: 'Cauã Henrique',
+        email: 'cauah123@gmail.com',
+        address: 'Rua Doc 15, Rio de Janeiro',
+        bankAccount: '123456',
+        digit: '1',
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Erro inesperado na execução',
+  })
+  @ApiBadRequestResponse({
+    description: 'Usuário existente na base',
+  })
+  @ApiCreatedResponse({
+    description: 'Usuário criado',
+    example: {
+      statusCode: 201,
+      body: {
+        id: 'string',
+        name: 'string',
+        email: 'string',
+        address: 'string',
+        bankAccount: 'string',
+        digit: 'string',
+        pictureUrl: 'string',
+        pictureKey: 'string',
+        status: 'ACTIVE',
+        createdAt: 'Date',
+        deletedAt: 'Date',
+      },
+    },
+  })
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async create(
@@ -74,6 +150,38 @@ export class UserController {
     response.status(result.statusCode).json(result);
   }
 
+  @ApiBody({
+    schema: {
+      example: {
+        name: 'Cauã Henrique',
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Erro inesperado na execução',
+  })
+  @ApiBadRequestResponse({
+    description: 'Usuário existente na base',
+  })
+  @ApiOkResponse({
+    description: 'Usuário atualizado',
+    example: {
+      statusCode: 200,
+      body: {
+        id: 'string',
+        name: 'string',
+        email: 'string',
+        address: 'string',
+        bankAccount: 'string',
+        digit: 'string',
+        pictureUrl: 'string',
+        pictureKey: 'string',
+        status: 'ACTIVE',
+        createdAt: 'Date',
+        deletedAt: 'Date',
+      },
+    },
+  })
   @Patch(':id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async update(
@@ -88,6 +196,15 @@ export class UserController {
     response.status(result.statusCode).json(result);
   }
 
+  @ApiInternalServerErrorResponse({
+    description: 'Erro inesperado na execução',
+  })
+  @ApiNotFoundResponse({
+    description: 'Usuário não encontrado na base',
+  })
+  @ApiNoContentResponse({
+    description: 'Usuário deletado',
+  })
   @Delete(':id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async delete(
@@ -101,6 +218,25 @@ export class UserController {
     response.status(result.statusCode).json(result);
   }
 
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        picture: {
+          type: 'string',
+          format: 'binary',
+          example: 'foto_perfil.png',
+        },
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Erro inesperado na execução',
+  })
+  @ApiNotFoundResponse({
+    description: 'Usuário não encontrado na base',
+  })
   @Patch(':id/profile-picture')
   @UseInterceptors(FileInterceptor('picture'))
   async updateProfilePicture(
